@@ -1,0 +1,4 @@
+from django.db import migrations,models
+class Migration(migrations.Migration):
+    initial=True;dependencies=[]
+    operations=[migrations.CreateModel(name='CompanyProfile',fields=[('id',models.BigAutoField(auto_created=True,primary_key=True,serialize=False,verbose_name='ID')),('name',models.CharField(default='ISSABUB Nigeria Limited',max_length=200)),('tagline',models.CharField(default='Your vision, our execution.',max_length=255)),('description',models.TextField()),('mission',models.TextField()),('vision',models.TextField()),('address',models.CharField(max_length=300)),('phone',models.CharField(max_length=50)),('email',models.EmailField(max_length=254)),('business_hours',models.JSONField(blank=True,default=dict)),('statistics',models.JSONField(blank=True,default=dict)),('updated_at',models.DateTimeField(auto_now=True))])]
