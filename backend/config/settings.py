@@ -10,7 +10,7 @@ def env_list(name, default=''):
     return [x.strip() for x in os.getenv(name, default).split(',') if x.strip()]
 
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'dev-only-change-me')
-DEBUG = env_bool('DJANGO_DEBUG', True)
+DEBUG = env_bool('DJANGO_DEBUG', False)
 ALLOWED_HOSTS = env_list('DJANGO_ALLOWED_HOSTS', 'issabubngltd.vercel.app,issabubngltd-be2arc5so-adesamson0404-1499.vercel.app,127.0.0.1,localhost')
 
 INSTALLED_APPS = [
