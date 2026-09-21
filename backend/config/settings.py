@@ -11,7 +11,7 @@ def env_list(name, default=''):
 
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'dev-only-change-me')
 DEBUG = env_bool('DJANGO_DEBUG', True)
-ALLOWED_HOSTS = env_list('DJANGO_ALLOWED_HOSTS', 'issabubngltd.vercel.app,issabubngltd-be2arc5so-adesamson0404-1499.vercel.app,127.0.0.1,localhost')
+ALLOWED_HOSTS = env_list('DJANGO_ALLOWED_HOSTS', '*.vercel.app,127.0.0.1,localhost')
 
 INSTALLED_APPS = [
     'django.contrib.admin','django.contrib.auth','django.contrib.contenttypes','django.contrib.sessions',
