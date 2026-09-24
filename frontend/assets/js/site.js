@@ -1,5 +1,9 @@
 const RAILWAY_PUBLIC_API = 'https://issabubngltd-production.up.railway.app/api';
-const LOCAL_API = ['localhost','127.0.0.1'].includes(window.location.hostname) ? 'http://127.0.0.1:8000/api' : '/api';
+
+const LOCAL_API = ['localhost', '127.0.0.1'].includes(window.location.hostname)
+    ? 'http://127.0.0.1:8000/api'
+    : RAILWAY_PUBLIC_API;
+
 const API_BASE = (window.ISSABUB_API_BASE || LOCAL_API).replace(/\/$/, '');
 
 const servicesFallback = [
