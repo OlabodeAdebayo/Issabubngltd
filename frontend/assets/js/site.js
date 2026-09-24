@@ -44,5 +44,126 @@ function openProjectModal(p){if(!p)return;ensureModal();const m=document.getElem
 function closeProjectModal(){const m=document.getElementById('project-modal');if(!m)return;m.classList.remove('open');m.setAttribute('aria-hidden','true');document.body.classList.remove('menu-open')}
 async function api(path,fallback){try{const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),6500);const r=await fetch(`${API_BASE}/${path}`,{headers:{Accept:'application/json'},signal:controller.signal});clearTimeout(timer);if(!r.ok)throw new Error(`API ${r.status}`);const d=await r.json();return d.results||d}catch(error){console.warn('ISSABUB API fallback:',error);return fallback}}
 async function boot(){header();footer();const [services,projects]=await Promise.all([api('services/',servicesFallback),api('projects/',projectsFallback)]);const normalizedProjects=(projects||projectsFallback).map((p,i)=>({...p,image:p.image||projectsFallback[i]?.image||projectsFallback[0].image}));renderServices(services,document.getElementById('home-services'));renderServiceDetails(services);const homeProjects=document.getElementById('home-projects');renderProjects(normalizedProjects.slice(0,6),homeProjects);const projectList=document.getElementById('project-list');renderProjects(normalizedProjects,projectList);const filters=document.querySelectorAll('.filter');filters.forEach(btn=>btn.addEventListener('click',()=>{filters.forEach(x=>x.classList.remove('active'));btn.classList.add('active');const f=btn.dataset.filter;const filtered=f==='all'?normalizedProjects:normalizedProjects.filter(p=>p.category===f);renderProjects(filtered,projectList);const count=document.getElementById('project-count');if(count)count.textContent=`${filtered.length} project${filtered.length===1?'':'s'}`;}));const count=document.getElementById('project-count');if(count)count.textContent=`${normalizedProjects.length} projects`;bindQuoteForm()}
-async function bindQuoteForm(){const form=document.getElementById('quote-form');if(!form)return;form.addEventListener('submit',async e=>{e.preventDefault();const status=document.getElementById('form-status');status.className='form-status pending';status.textContent='Submitting your request…';const payload=Object.fromEntries(new FormData(form).entries());const button=form.querySelector('button[type="submit"]');if(button)button.disabled=true;try{const r=await fetch(`${API_BASE}/quotes/`,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(payload)});if(!r.ok){let message='The server could not process the request.';try{const detail=await r.json();message=Object.values(detail).flat().join(' ')||message}catch{}throw new Error(message)}form.reset();status.className='form-status success';status.textContent='Thank you. Your request has been received.'}catch(err){console.error(err);status.className='form-status error';status.textContent='We could not submit the request right now. Please call +234 812 684 3284 or email issabubngltd@outlook.com.'}finally{if(button)button.disabled=false}})}
+async function bindQuoteForm() {
+    const form = document.getElementById('quote-form');
+    if (!form) return;
+
+    const status = document.getElementById('form-status');
+    const button = form.querySelector('button[type="submit"]');
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        if (button) button.disabled = true;
+
+        if (status) {
+            status.className = 'form-status pending';
+            status.textContent = 'Sending your request…';
+        }
+
+        const formData = new FormData(form);
+
+        const payload = Object.fromEntries(formData.entries());
+
+        // Basic client-side validation
+        const requiredFields = ['name', 'email', 'message'];
+
+        for (const field of requiredFields) {
+            if (!String(payload[field] || '').trim()) {
+                if (status) {
+                    status.className = 'form-status error';
+                    status.textContent =
+                        `Please provide your ${field}.`;
+                }
+
+                if (button) button.disabled = false;
+                return;
+            }
+        }
+
+        // Basic email validation
+        const email = String(payload.email).trim();
+
+        const emailPattern =
+            /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!emailPattern.test(email)) {
+            if (status) {
+                status.className = 'form-status error';
+                status.textContent =
+                    'Please enter a valid email address.';
+            }
+
+            if (button) button.disabled = false;
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_BASE}/quotes/`, {
+                method: 'POST',
+
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+
+                credentials: 'same-origin',
+
+                body: JSON.stringify(payload)
+            });
+
+            let result = {};
+
+            try {
+                result = await response.json();
+            } catch {
+                result = {};
+            }
+
+            if (!response.ok) {
+                let message =
+                    'The server could not process your request.';
+
+                if (result.detail) {
+                    message = result.detail;
+                } else if (result.error) {
+                    message = result.error;
+                } else if (typeof result === 'object') {
+                    const errors = Object.values(result)
+                        .flat()
+                        .filter(Boolean);
+
+                    if (errors.length) {
+                        message = errors.join(' ');
+                    }
+                }
+
+                throw new Error(message);
+            }
+
+            form.reset();
+
+            if (status) {
+                status.className = 'form-status success';
+                status.textContent =
+                    result.message ||
+                    'Thank you. Your request has been sent successfully. We will contact you shortly.';
+            }
+
+        } catch (error) {
+            console.error('Quote submission error:', error);
+
+            if (status) {
+                status.className = 'form-status error';
+
+                status.textContent =
+                    error.message ||
+                    'We could not submit your request right now. Please call +234 812 684 3284 or email issabubngltd@outlook.com.';
+            }
+
+        } finally {
+            if (button) button.disabled = false;
+        }
+    });
+}
 boot();
