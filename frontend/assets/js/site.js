@@ -125,26 +125,29 @@ async function bindQuoteForm() {
             }
 
             if (!response.ok) {
-                let message =
-                    'The server could not process your request.';
+                let message = 'The server could not process your request.';
 
                 if (result.detail) {
                     message = result.detail;
                 } else if (result.error) {
                     message = result.error;
-                } else if (typeof result === 'object') {
-                    const errors = Object.values(result)
-                        .flat()
-                        .filter(Boolean);
+                } else if (typeof result === 'object' && result !== null) {
+                    // Properly parse DRF error objects like {"field_name": ["Error message"]}
+                    const extractedErrors = Object.entries(result)
+                        .map(([field, errs]) => {
+                            const errArray = Array.isArray(errs) ? errs : [errs];
+                            const cleanErrs = errArray.map(e => (typeof e === 'object' ? JSON.stringify(e) : e));
+                            const fieldName = field.replace('_', ' ');
+                            return `${fieldName}: ${cleanErrs.join(', ')}`;
+                        });
 
-                    if (errors.length) {
-                        message = errors.join(' ');
+                    if (extractedErrors.length > 0) {
+                        message = extractedErrors.join(' | ');
                     }
                 }
 
                 throw new Error(message);
             }
-
             form.reset();
 
             if (status) {
