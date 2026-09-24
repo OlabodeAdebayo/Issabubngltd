@@ -62,42 +62,35 @@ async function bindQuoteForm() {
         }
 
         const formData = new FormData(form);
-
         const payload = Object.fromEntries(formData.entries());
 
-        // FIX: Ensure both payload.full_name (for Django) and payload.name (for JS fallback) are set
+        // Ensure both full_name and name exist in payload
         payload.full_name = payload.full_name || payload.name || '';
         payload.name = payload.name || payload.full_name || '';
 
-        // Basic client-side validation using full_name
+        // Basic client-side validation
         const requiredFields = ['full_name', 'email', 'message'];
 
         for (const field of requiredFields) {
             if (!String(payload[field] || '').trim()) {
                 if (status) {
                     status.className = 'form-status error';
-                    status.textContent =
-                        `Please provide your ${field.replace('_', ' ')}.`;
+                    status.textContent = `Please provide your ${field.replace('_', ' ')}.`;
                 }
-
                 if (button) button.disabled = false;
                 return;
             }
         }
 
-        // Basic email validation
+        // Email validation
         const email = String(payload.email).trim();
-
-        const emailPattern =
-            /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
         if (!emailPattern.test(email)) {
             if (status) {
                 status.className = 'form-status error';
-                status.textContent =
-                    'Please enter a valid email address.';
+                status.textContent = 'Please enter a valid email address.';
             }
-
             if (button) button.disabled = false;
             return;
         }
@@ -105,19 +98,15 @@ async function bindQuoteForm() {
         try {
             const response = await fetch(`${API_BASE}/quotes/`, {
                 method: 'POST',
-
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json'
                 },
-
                 credentials: 'same-origin',
-
                 body: JSON.stringify(payload)
             });
 
             let result = {};
-
             try {
                 result = await response.json();
             } catch {
@@ -125,35 +114,45 @@ async function bindQuoteForm() {
             }
 
             if (!response.ok) {
-                let message = 'The server could not process your request.';
+                let errorMessage = 'The server could not process your request.';
 
-                if (result.detail) {
-                    message = result.detail;
-                } else if (result.error) {
-                    message = result.error;
-                } else if (typeof result === 'object' && result !== null) {
-                    // Properly parse DRF error objects like {"field_name": ["Error message"]}
-                    const extractedErrors = Object.entries(result)
-                        .map(([field, errs]) => {
-                            const errArray = Array.isArray(errs) ? errs : [errs];
-                            const cleanErrs = errArray.map(e => (typeof e === 'object' ? JSON.stringify(e) : e));
-                            const fieldName = field.replace('_', ' ');
-                            return `${fieldName}: ${cleanErrs.join(', ')}`;
-                        });
+                if (typeof result === 'string') {
+                    errorMessage = result;
+                } else if (result && typeof result.detail === 'string') {
+                    errorMessage = result.detail;
+                } else if (result && typeof result.error === 'string') {
+                    errorMessage = result.error;
+                } else if (result && typeof result === 'object') {
+                    // Extract field-level errors safely without [object Object]
+                    const parsedErrors = [];
 
-                    if (extractedErrors.length > 0) {
-                        message = extractedErrors.join(' | ');
+                    for (const [key, value] of Object.entries(result)) {
+                        const fieldName = key.replace('_', ' ');
+                        if (Array.isArray(value)) {
+                            const messages = value.map(val => (typeof val === 'object' ? JSON.stringify(val) : String(val)));
+                            parsedErrors.push(`${fieldName}: ${messages.join(', ')}`);
+                        } else if (typeof value === 'string') {
+                            parsedErrors.push(`${fieldName}: ${value}`);
+                        } else if (typeof value === 'object' && value !== null) {
+                            parsedErrors.push(`${fieldName}: ${JSON.stringify(value)}`);
+                        }
+                    }
+
+                    if (parsedErrors.length > 0) {
+                        errorMessage = parsedErrors.join(' | ');
                     }
                 }
 
-                throw new Error(message);
+                // Strictly force string conversion
+                throw new Error(String(errorMessage));
             }
+
             form.reset();
 
             if (status) {
                 status.className = 'form-status success';
                 status.textContent =
-                    result.message ||
+                    (typeof result.message === 'string' ? result.message : null) ||
                     'Thank you. Your request has been sent successfully. We will contact you shortly.';
             }
 
@@ -163,9 +162,14 @@ async function bindQuoteForm() {
             if (status) {
                 status.className = 'form-status error';
 
-                status.textContent =
-                    error.message ||
-                    'We could not submit your request right now. Please call +234 812 684 3284 or email issabubngltd@outlook.com.';
+                // Safely extract the string representation of error
+                let displayError = 'We could not submit your request right now. Please call +234 812 684 3284 or email issabubngltd@outlook.com.';
+
+                if (error && typeof error.message === 'string' && error.message !== '[object Object]') {
+                    displayError = error.message;
+                }
+
+                status.textContent = displayError;
             }
 
         } finally {
