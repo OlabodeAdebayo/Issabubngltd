@@ -96,6 +96,7 @@ async function bindQuoteForm() {
         }
 
         try {
+            console.log('Sending request to:', `${API_BASE}/quotes/`);
             const response = await fetch(`${API_BASE}/quotes/`, {
                 method: 'POST',
                 headers: {
