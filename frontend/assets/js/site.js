@@ -65,15 +65,19 @@ async function bindQuoteForm() {
 
         const payload = Object.fromEntries(formData.entries());
 
-        // Basic client-side validation
-        const requiredFields = ['name', 'email', 'message'];
+        // FIX: Ensure both payload.full_name (for Django) and payload.name (for JS fallback) are set
+        payload.full_name = payload.full_name || payload.name || '';
+        payload.name = payload.name || payload.full_name || '';
+
+        // Basic client-side validation using full_name
+        const requiredFields = ['full_name', 'email', 'message'];
 
         for (const field of requiredFields) {
             if (!String(payload[field] || '').trim()) {
                 if (status) {
                     status.className = 'form-status error';
                     status.textContent =
-                        `Please provide your ${field}.`;
+                        `Please provide your ${field.replace('_', ' ')}.`;
                 }
 
                 if (button) button.disabled = false;
