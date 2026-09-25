@@ -180,7 +180,7 @@ APPEND_SLASH = True
 
 CORS_ALLOWED_ORIGINS = env_list(
     "CORS_ALLOWED_ORIGINS",
-    "https://issabubnigltd.vercel.app, http://127.0.0.1:5500,http://localhost:5500"
+    "https://issabubnigltd.vercel.app, https://issabubnigltd-git-main-adesamson0404-1499.vercel.app, http://127.0.0.1:5500,http://localhost:5500"
 )
 
 CORS_ALLOW_CREDENTIALS = True
