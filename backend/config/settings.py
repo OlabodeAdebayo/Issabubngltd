@@ -1,6 +1,13 @@
 from pathlib import Path
 import os
-from dotenv import load_dotenv
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+try:
+    from dotenv import load_dotenv  # pyright: ignore[reportMissingImports]
+except ImportError:  # pragma: no cover - optional dependency in production
+    def load_dotenv(*args, **kwargs):
+        return False
 
 load_dotenv(BASE_DIR / ".env")
 
