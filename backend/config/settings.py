@@ -35,10 +35,10 @@ def env_list(name, default=""):
 # SECURITY
 # ================================================================
 
-SECRET_KEY = os.getenv(
-    "DJANGO_SECRET_KEY",
-    "dev-only-change-me"
-)
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
+
+if not SECRET_KEY:
+    raise RuntimeError("DJANGO_SECRET_KEY is not configured.")
 
 DEBUG = env_bool(
     "DJANGO_DEBUG",
