@@ -57,7 +57,7 @@ DEBUG = env_bool(
 
 ALLOWED_HOSTS = env_list(
     "DJANGO_ALLOWED_HOSTS",
-    "*.vercel.app,127.0.0.1,localhost"
+    "*.vercel.app,*.railway.app,127.0.0.1,localhost"
 )
 
 
@@ -196,7 +196,7 @@ APPEND_SLASH = True
 
 CORS_ALLOWED_ORIGINS = env_list(
     "CORS_ALLOWED_ORIGINS",
-    "https://issabubnigltd.vercel.app, http://127.0.0.1:5500,http://localhost:5500"
+    "https://issabubngltd.vercel.app, http://127.0.0.1:5500,http://localhost:5500"
 )
 
 CORS_ALLOWED_ORIGIN_REGEXES = [
