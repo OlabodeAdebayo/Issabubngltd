@@ -31,3 +31,599 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 @media(max-width:640px){.container{width:min(var(--container),calc(100% - 28px))}.brand-name{font-size:.76rem}.hero{min-height:auto;display:block}
                         .hero-content{padding:76px 0 42px}.hero h1{font-size:clamp(2.2rem,11vw,3.2rem)}.hero-stats{position:static;display:grid;grid-template-columns:repeat(2,1fr)}.hero-stats div{padding:15px}.section{padding:58px 0}.reason-grid,.service-grid,.project-grid,.value-grid,.contact-cards,.quote-form,.footer-grid{grid-template-columns:1fr}.why-home .rounded-img{min-height:300px}.service-card{min-height:310px}.project-card img{height:220px}.section-heading{display:block}.section-heading .text-link{display:inline-block;margin-top:10px}.filter-row{overflow-x:auto;flex-wrap:nowrap;padding-bottom:6px;scrollbar-width:thin}.filter{flex:0 0 auto}.footer-bottom{display:block}.footer-bottom span{display:block;margin-top:8px}.page-hero{min-height:280px}.quote-form .full{grid-column:auto}.cta{padding:48px 0}.modal{padding:10px}.modal-panel{max-height:94vh}.modal-panel img{max-height:65vh}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn,.project-card,.project-card img,.site-nav a:after,.modal{transition:none!important}}
+
+```css
+/* =========================================================
+   ISSABUB NIGERIA LIMITED
+   MINIMAL MOBILE RESPONSIVE FIX
+   ---------------------------------------------------------
+   Add this AFTER your existing CSS.
+   Do NOT replace the existing CSS.
+   ========================================================= */
+
+
+/* ---------------------------------------------------------
+   TABLET / SMALL LAPTOP
+   --------------------------------------------------------- */
+@media (max-width: 980px) {
+
+  /* Header */
+  .site-header {
+    gap: 16px;
+  }
+
+  .brand {
+    min-width: 0;
+  }
+
+  .brand-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .site-nav {
+    display: none;
+    position: fixed;
+    top: var(--header-h);
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    width: 100%;
+    height: calc(100vh - var(--header-h));
+
+    padding: 24px 20px;
+    background: rgba(23, 34, 58, 0.99);
+
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .site-nav.open {
+    display: flex;
+  }
+
+  .site-nav a {
+    width: 100%;
+    padding: 14px 4px;
+  }
+
+  .site-nav .nav-cta {
+    text-align: center;
+    margin-top: 8px;
+  }
+
+  .nav-toggle {
+    display: block;
+    flex-shrink: 0;
+  }
+
+
+  /* Main two-column sections */
+  .two-col,
+  .service-detail,
+  .contact-layout {
+    grid-template-columns: 1fr;
+  }
+
+  /*
+     Keep the existing image order.
+     Do NOT move service images around.
+  */
+  .service-detail:nth-child(even) .service-detail-img {
+    order: initial;
+  }
+
+
+  /* Projects */
+  .project-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+
+  /* Footer */
+  .footer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+
+  /* CTA */
+  .cta-inner {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+
+/* ---------------------------------------------------------
+   MOBILE
+   --------------------------------------------------------- */
+@media (max-width: 640px) {
+
+  /* Prevent accidental horizontal scrolling */
+  html,
+  body {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+
+  /* Container
+     Keep your original sizing logic, only reduce side space.
+  */
+  .container {
+    width: calc(100% - 28px);
+    max-width: 100%;
+  }
+
+
+  /* -------------------------------------------------------
+     HEADER
+     ------------------------------------------------------- */
+
+  .site-header {
+    min-height: 66px;
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .brand {
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .brand img {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+  }
+
+  .brand-name {
+    min-width: 0;
+    max-width: calc(100vw - 115px);
+    font-size: 0.76rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .nav-toggle {
+    flex-shrink: 0;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 8px 10px;
+  }
+
+
+  /* Mobile navigation */
+  .site-nav {
+    top: 66px;
+    height: calc(100vh - 66px);
+    padding: 20px;
+  }
+
+  .site-nav a {
+    padding: 15px 4px;
+    font-size: 0.88rem;
+  }
+
+
+  /* -------------------------------------------------------
+     HERO
+     ------------------------------------------------------- */
+
+  .hero {
+    min-height: auto;
+    display: block;
+  }
+
+  .hero-content {
+    width: calc(100% - 28px);
+    padding: 70px 0 42px;
+  }
+
+  .hero h1 {
+    max-width: 100%;
+    font-size: clamp(2.1rem, 10vw, 3.2rem);
+    line-height: 1.05;
+    overflow-wrap: break-word;
+  }
+
+  .hero p {
+    max-width: 100%;
+    font-size: 0.95rem;
+  }
+
+
+  /* Hero buttons */
+  .actions {
+    width: 100%;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .actions .btn {
+    width: 100%;
+  }
+
+
+  /*
+     Keep hero image/background exactly as your
+     original design. Only make the statistics
+     section fit the screen.
+  */
+  .hero-stats {
+    position: static;
+    width: 100%;
+    transform: none;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hero-stats div {
+    min-width: 0;
+    padding: 15px 10px;
+  }
+
+  .hero-stats strong {
+    font-size: 1.35rem;
+  }
+
+  .hero-stats span {
+    font-size: 0.55rem;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+  }
+
+
+  /* -------------------------------------------------------
+     SECTIONS
+     ------------------------------------------------------- */
+
+  .section {
+    padding: 56px 0;
+  }
+
+  .section h2,
+  .cta h2 {
+    font-size: clamp(1.9rem, 8.5vw, 2.6rem);
+    line-height: 1.08;
+  }
+
+  .section p {
+    font-size: 0.94rem;
+  }
+
+
+  /* -------------------------------------------------------
+     WHY / REASON GRID
+     ------------------------------------------------------- */
+
+  .reason-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+
+  /* -------------------------------------------------------
+     SERVICES
+     ------------------------------------------------------- */
+
+  .service-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .service-card {
+    min-height: 300px;
+  }
+
+  /*
+     Do NOT change the service card background,
+     overlay, colors or image positioning.
+  */
+
+  .service-list {
+    gap: 48px;
+  }
+
+  .service-detail {
+    grid-template-columns: 1fr;
+    gap: 26px;
+  }
+
+  .service-detail-img {
+    width: 100%;
+    height: auto;
+    min-height: 240px;
+    max-height: 360px;
+    object-fit: cover;
+  }
+
+
+  /* -------------------------------------------------------
+     PROJECTS
+     ------------------------------------------------------- */
+
+  .project-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .project-card {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .project-card img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+  }
+
+  .project-body {
+    min-width: 0;
+  }
+
+  .project-card h3,
+  .project-card p {
+    overflow-wrap: anywhere;
+  }
+
+
+  /* Project filters */
+  .filter-row {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    padding-bottom: 8px;
+
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+
+  .filter {
+    flex: 0 0 auto;
+  }
+
+
+  /* -------------------------------------------------------
+     PAGE HERO
+     ------------------------------------------------------- */
+
+  .page-hero {
+    min-height: 280px;
+  }
+
+  .page-hero h1 {
+    font-size: clamp(2rem, 10vw, 3.2rem);
+    line-height: 1.05;
+  }
+
+  .page-hero p:not(.eyebrow) {
+    font-size: 0.94rem;
+  }
+
+
+  /* -------------------------------------------------------
+     STATS
+     ------------------------------------------------------- */
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+
+  /* -------------------------------------------------------
+     VALUE GRID
+     ------------------------------------------------------- */
+
+  .value-grid {
+    grid-template-columns: 1fr;
+  }
+
+
+  /* -------------------------------------------------------
+     CONTACT
+     ------------------------------------------------------- */
+
+  .contact-layout {
+    grid-template-columns: 1fr;
+    gap: 34px;
+  }
+
+  .contact-cards {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+
+  /* Quote form */
+  .quote-form {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .quote-form .full {
+    grid-column: auto;
+  }
+
+  .quote-form input,
+  .quote-form select,
+  .quote-form textarea {
+    width: 100%;
+    min-width: 0;
+
+    /*
+       16px prevents iPhone Safari from
+       automatically zooming when typing.
+    */
+    font-size: 16px;
+  }
+
+  .quote-form textarea {
+    min-height: 140px;
+  }
+
+  .quote-form .btn {
+    width: 100%;
+  }
+
+
+  /* -------------------------------------------------------
+     CTA
+     ------------------------------------------------------- */
+
+  .cta {
+    padding: 48px 0;
+  }
+
+  .cta-inner {
+    width: 100%;
+  }
+
+  .cta .btn {
+    width: 100%;
+  }
+
+
+  /* -------------------------------------------------------
+     FOOTER
+     ------------------------------------------------------- */
+
+  .footer {
+    padding: 48px 0 22px;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .footer-bottom {
+    display: block;
+    margin-top: 32px;
+  }
+
+  .footer-bottom span {
+    display: block;
+    margin-top: 8px;
+  }
+
+
+  /* -------------------------------------------------------
+     MODAL
+     ------------------------------------------------------- */
+
+  .modal {
+    padding: 10px;
+  }
+
+  .modal-panel {
+    width: 100%;
+    max-width: 100%;
+    max-height: 94vh;
+  }
+
+  .modal-panel img {
+    width: 100%;
+    max-height: 65vh;
+    object-fit: contain;
+  }
+
+  .modal-content {
+    padding: 18px;
+  }
+}
+
+
+/* ---------------------------------------------------------
+   VERY SMALL PHONES
+   --------------------------------------------------------- */
+@media (max-width: 380px) {
+
+  .container {
+    width: calc(100% - 24px);
+  }
+
+  .site-header {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .brand img {
+    width: 36px;
+    height: 36px;
+  }
+
+  .brand-name {
+    max-width: calc(100vw - 105px);
+    font-size: 0.68rem;
+  }
+
+  .hero-content {
+    width: calc(100% - 24px);
+    padding-top: 55px;
+  }
+
+  .hero h1 {
+    font-size: 2rem;
+  }
+
+  .hero-stats strong {
+    font-size: 1.2rem;
+  }
+
+  .hero-stats span {
+    font-size: 0.5rem;
+  }
+
+  .section {
+    padding: 48px 0;
+  }
+
+  .service-card {
+    min-height: 280px;
+  }
+
+  .project-card img {
+    height: 200px;
+  }
+
+  .quote-form {
+    padding: 18px 14px;
+  }
+}
+
+
+/* ---------------------------------------------------------
+   LANDSCAPE PHONES
+   --------------------------------------------------------- */
+
+@media (max-height: 520px) and (orientation: landscape) {
+
+  .site-nav {
+    padding-bottom: 50px;
+  }
+
+  .hero-content {
+    padding-top: 50px;
+    padding-bottom: 35px;
+  }
+
+  .hero h1 {
+    font-size: clamp(2rem, 7vw, 3.4rem);
+  }
+
+  .page-hero {
+    min-height: 240px;
+  }
+}
+```
