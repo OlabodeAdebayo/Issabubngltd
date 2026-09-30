@@ -317,12 +317,13 @@ QUOTE_NOTIFICATION_EMAIL = os.getenv(
 # ================================================================
 # PRODUCTION HARDENING
 # ================================================================
-
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+USE_X_FORWARDED_HOST = True
 if not DEBUG:
 
     SECURE_SSL_REDIRECT = env_bool(
         "DJANGO_SECURE_SSL_REDIRECT",
-        True
+        False
     )
 
     SESSION_COOKIE_SECURE = True
