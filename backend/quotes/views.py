@@ -16,58 +16,28 @@ class QuoteRequestViewSet(ModelViewSet):
 
     serializer_class = QuoteRequestSerializer
 
+    throttle_scope = "quotes"
+
     def get_permissions(self):
-        """
-        Website visitors can create quote requests.
-
-        Only authenticated Django administrators can:
-        - list requests
-        - retrieve requests
-        - update requests
-        - delete requests
-        """
-
         if self.action == "create":
             return [AllowAny()]
-
         return [IsAdminUser()]
 
     def get_throttles(self):
-        """
-        Apply the quotes-specific rate limit to public submissions.
-        """
-
         if self.action == "create":
             return [ScopedRateThrottle()]
-
         return super().get_throttles()
 
-    throttle_scope = "quotes"
-
     def perform_create(self, serializer):
-        """
-        Save the quote request and send an email notification
-        to ISSABUB Nigeria Limited.
-        """
-
-        # ---------------------------------------------------------
-        # 1. Save the customer's quote request
-        # ---------------------------------------------------------
-
         quote = serializer.save()
 
-        # ---------------------------------------------------------
-        # 2. Build email subject
-        # ---------------------------------------------------------
+        if not getattr(settings, "EMAIL_HOST_PASSWORD", ""):
+            quote.email_sent = False
+            quote.email_error = "EMAIL_HOST_PASSWORD is not configured."
+            quote.save(update_fields=["email_sent", "email_error"])
+            return
 
-        subject = (
-            f"New Website Quote Request - "
-            f"{quote.service}"
-        )
-
-        # ---------------------------------------------------------
-        # 3. Build email body
-        # ---------------------------------------------------------
+        subject = f"New Website Quote Request - {quote.service}"
 
         body = f"""
 ISSABUB NIGERIA LIMITED
@@ -117,82 +87,27 @@ This enquiry was submitted through the
 ISSABUB Nigeria Limited website.
 """
 
-        # ---------------------------------------------------------
-        # 4. Get notification email from settings
-        # ---------------------------------------------------------
-
         notification_email = getattr(
             settings,
             "QUOTE_NOTIFICATION_EMAIL",
-            "issabubngltd@outlook.com"
+            "issabubngltd@outlook.com",
         )
-
-        # ---------------------------------------------------------
-        # 5. Create email
-        # ---------------------------------------------------------
 
         email = EmailMessage(
             subject=subject,
-
             body=body,
-
             from_email=settings.DEFAULT_FROM_EMAIL,
-
-            to=[
-                notification_email
-            ],
-
-            reply_to=[
-                quote.email
-            ],
+            to=[notification_email],
+            reply_to=[quote.email],
         )
 
-        # ---------------------------------------------------------
-        # 6. Send email
-        # ---------------------------------------------------------
-
         try:
-
-            email.send(
-                fail_silently=False
-            )
-
-            # -----------------------------------------------------
-            # 7. Record successful email delivery attempt
-            # -----------------------------------------------------
-
+            email.send(fail_silently=False)
             quote.email_sent = True
-
             quote.email_sent_at = timezone.now()
-
             quote.email_error = ""
-
-            quote.save(
-                update_fields=[
-                    "email_sent",
-                    "email_sent_at",
-                    "email_error",
-                ]
-            )
-
+            quote.save(update_fields=["email_sent", "email_sent_at", "email_error"])
         except Exception as exc:
-
-            # -----------------------------------------------------
-            # 8. Record email failure
-            # -----------------------------------------------------
-
             quote.email_sent = False
-
             quote.email_error = str(exc)
-
-            quote.save(
-                update_fields=[
-                    "email_sent",
-                    "email_error",
-                ]
-            )
-
-            # Do NOT delete the quote.
-            #
-            # The customer's request is still safely stored
-            # in the database.
+            quote.save(update_fields=["email_sent", "email_error"])
