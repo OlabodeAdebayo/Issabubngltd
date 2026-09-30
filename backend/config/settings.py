@@ -196,7 +196,7 @@ APPEND_SLASH = True
 
 CORS_ALLOWED_ORIGINS = env_list(
     "CORS_ALLOWED_ORIGINS",
-    "https://issabubngltd.vercel.app, http://127.0.0.1:5500,http://localhost:5500"
+    "https://issabubngltd.vercel.app,https://issabubnigltd.vercel.app, http://127.0.0.1:5500,http://localhost:5500"
 )
 
 CORS_ALLOWED_ORIGIN_REGEXES = [
@@ -230,7 +230,7 @@ CORS_ALLOW_HEADERS = [
 
 CSRF_TRUSTED_ORIGINS = env_list(
     "CSRF_TRUSTED_ORIGINS",
-    ""
+    "https://issabubnigltd.vercel.app,https://issabubngltd.vercel.app"
 )
 
 
